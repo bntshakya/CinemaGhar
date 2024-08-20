@@ -13,5 +13,10 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
+        'tickets/trigger',
+        'stripe/embed',
+        'tickets/embed/buy',
+        '/create-confirm-intent',
+        '/user/subscription/setData'
     ];
 }

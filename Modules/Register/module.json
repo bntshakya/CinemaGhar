@@ -1,0 +1,9 @@
+{
+    "name": "Register",
+    "alias": "register",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": ["Modules\\Register\\App\\Providers\\RegisterServiceProvider"],
+    "files": []
+}

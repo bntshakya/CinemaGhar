@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\ChatSent;
+use App\Events\QRScanned;
+use App\Listeners\ChatListener;
+use App\Listeners\QRScanListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +22,15 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        OrderShipped::class => [
+            SendShipmentNotification::class,
+        ],
+        QRScanned::class=>[
+            QRScanListener::class,
+        ],
+        ChatSent::class=>[
+            ChatListener::class,
+        ]
     ];
 
     /**

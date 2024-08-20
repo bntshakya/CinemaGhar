@@ -1,0 +1,17 @@
+genre
+movies
+cinema_halls (ktm, patan, bhtk)
+hall_rooms ( A , B , C) seats 
+
+cinema_hall_room_movies 
+KTM A LOOT 9:00 ~ 12:00
+KTM A LOOT 13:00~16:00
+
+--------
+After booking show confirmation
+send mail of confirmation
+
+
+
+
+

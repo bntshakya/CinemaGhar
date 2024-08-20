@@ -1,0 +1,9 @@
+{
+    "Test": true,
+    "Admin": true,
+    "User": true,
+    "Login": true,
+    "Register": true,
+    "Chat": true,
+    "Comment": true
+}
