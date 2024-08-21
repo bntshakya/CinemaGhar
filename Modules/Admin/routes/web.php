@@ -20,8 +20,7 @@ use Modules\Register\App\Http\Controllers\RegisterController;
 |
 */
 
-Route::get('/test', [AdminController::class, 'test'])->name('test');
-
+Route::get('/abc/', [AdminController::class, 'abc']);
 Route::group([
     'middleware' => ['sales']
 ], function () {

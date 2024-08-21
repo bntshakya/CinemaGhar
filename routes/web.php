@@ -87,3 +87,4 @@ Route::group([
 ], function () {
 Route::post('/create-confirm-intent',[UserController::class,'submitDetails'])->name('stripe.submitDetails');
 });
+

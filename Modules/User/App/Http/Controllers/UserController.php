@@ -10,6 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Auth;
+use HTTP_Request2;
+use HTTP_Request2_Exception;
 
 class UserController extends Controller
 {
@@ -225,4 +227,141 @@ class UserController extends Controller
         return redirect()->back()->with(['msg' => 'successfully deleted bookings']);
     }
 
+    public function verifyOtp(){
+        $request = new HTTP_Request2();
+        $request->setUrl('https://vv5ywm.api.infobip.com/2fa/2/applications');
+        $request->setMethod(HTTP_Request2::METHOD_POST);
+        $request->setConfig(array(
+            'follow_redirects' => TRUE
+        ));
+        $request->setHeader(array(
+            'Authorization' => 'App '. env('INFOBIP_API_KEY'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ));
+        $request->setBody('{"name":"2fa test application","enabled":true,"configuration":{"pinAttempts":10,"allowMultiplePinVerifications":true,"pinTimeToLive":"15m","verifyPinLimit":"1/3s","sendPinPerApplicationLimit":"100/1d","sendPinPerPhoneNumberLimit":"10/1d"}}');
+        try {
+            $response = $request->send();
+            if ($response->getStatus() == 200) {
+                echo $response->getBody();
+            } else {
+                return $response->getBody();
+            }
+        } catch (HTTP_Request2_Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    public function otpMsgTemplate(Request $request){
+        $appId = $request->input('appId');
+        // dd($appId);
+        $request = new HTTP_Request2();
+        $request->setUrl("https://vv5ywm.api.infobip.com/2fa/2/applications/{$appId}/messages");
+        // dd($request,$appId);
+        $request->setMethod(HTTP_Request2::METHOD_POST);
+        $request->setConfig(array(
+            'follow_redirects' => TRUE
+        ));
+        $request->setHeader(array(
+            'Authorization' => 'App ' . env('INFOBIP_API_KEY'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ));
+        $request->setBody('{"pinType":"NUMERIC","messageText":"Your OTP code is {{pin}}","pinLength":4,"senderId":"ServiceSMS"}');
+        try {
+            $response = $request->send();
+            if ($response->getStatus() == 200) {
+                echo $response->getBody();
+            } else {
+                echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .
+                    $response->getReasonPhrase();
+            }
+        } catch (HTTP_Request2_Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+
+
+    }
+
+    public function otpMsgDeliver(Request $request){
+        $applicationId = $request->input('appId');
+        $messageId = $request->input('msgId');
+        $request = new HTTP_Request2();
+        $request->setUrl('https://vv5ywm.api.infobip.com/2fa/2/pin');
+        $request->setMethod(HTTP_Request2::METHOD_POST);
+        $request->setConfig(array(
+            'follow_redirects' => TRUE
+        ));
+        $request->setHeader(array(
+            'Authorization' => 'App ' . env('INFOBIP_API_KEY'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ));
+        $request->setBody('{"applicationId":"' . $applicationId . '","messageId":"' . $messageId . '","from":"ServiceSMS","to":"9779840528745"}');
+        try {
+            $response = $request->send();
+            if ($response->getStatus() == 200) {
+                echo $response->getBody();
+            } else {
+                echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .
+                    $response->getReasonPhrase();
+            }
+        } catch (HTTP_Request2_Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    public function otpVerify(Request $request){
+        $pinId = $request->input('pinId');
+        $pinCode = $request->input('pinCode');
+        $request = new HTTP_Request2();
+        $request->setUrl("https://vv5ywm.api.infobip.com/2fa/2/pin/{$pinId}/verify");
+        $request->setMethod(HTTP_Request2::METHOD_POST);
+        $request->setConfig(array(
+            'follow_redirects' => TRUE
+        ));
+        $request->setHeader(array(
+            'Authorization' => 'App ' . env('INFOBIP_API_KEY'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ));
+        $request->setBody("{\"pin\":\"{$pinCode}\"}");
+        try {
+            $response = $request->send();
+            if ($response->getStatus() == 200) {
+                echo $response->getBody();
+            } else { 
+                echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' . $response->getBody().
+                    $response->getReasonPhrase();
+            }
+        } catch (HTTP_Request2_Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    public function otpResend(Request $request){
+        $pinId = $request->input('pinId');
+        $request = new HTTP_Request2();
+        $request->setUrl("https://vv5ywm.api.infobip.com/2fa/2/pin/{$pinId}/resend");
+        $request->setMethod(HTTP_Request2::METHOD_POST);
+        $request->setConfig(array(
+            'follow_redirects' => TRUE
+        ));
+        $request->setHeader(array(
+            'Authorization' => 'App ' . env('INFOBIP_API_KEY'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ));
+        try {
+            $response = $request->send();
+            if ($response->getStatus() == 200) {
+                echo $response->getBody();
+            } else {
+                echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' . $response->getBody() .
+                    $response->getReasonPhrase();
+            }
+        } catch (HTTP_Request2_Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
 }

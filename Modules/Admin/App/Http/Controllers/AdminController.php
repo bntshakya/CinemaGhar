@@ -23,7 +23,8 @@ use Carbon\Carbon;
 use Livewire\Features\SupportTesting\Render;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use App\Http\Controllers\Controller;
-
+use HTTP_Request2;
+use HTTP_Request2_Exception;
 
 class AdminController extends Controller
 {
@@ -312,6 +313,38 @@ class AdminController extends Controller
         }else{
             return response()->json(['success'=>false,'message'=>'hall deleted fail']);
         }
+    }
+
+    public function abc(){
+       
+
+
+$request = new HTTP_Request2();
+$request->setUrl('https://vv5ywm.api.infobip.com/2fa/2/pin/E8FBAE203DB5399E6C57078AD0F9521F/verify');
+$request->setMethod(HTTP_Request2::METHOD_POST);
+$request->setConfig(array(
+    'follow_redirects' => TRUE
+));
+$request->setHeader(array(
+    'Authorization' => 'App 8b35c1ceea5929d0c6b50070eaa1ac13-3c7d6943-8404-4b41-940f-c29b2a0d296e',
+    'Content-Type' => 'application/json',
+    'Accept' => 'application/json'
+));
+$request->setBody('{"pin":"8983"}');
+try {
+    $response = $request->send();
+    if ($response->getStatus() == 200) {
+        echo $response->getBody();
+    }
+    else {
+        echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .
+        $response->getReasonPhrase();
+    }
+}
+catch(HTTP_Request2_Exception $e) {
+    echo 'Error: ' . $e->getMessage();
+}
+    
     }
 
 }
