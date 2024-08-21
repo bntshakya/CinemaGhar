@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\User\App\Http\Controllers\UserController;
 use Modules\Admin\App\Http\Controllers\MovieController;
 use App\Http\Controllers\TicketController;
+// use MovieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,12 @@ use App\Http\Controllers\TicketController;
 Route::get('/movies/details', [MovieController::class, 'details'])->name('movies.details');
 Route::get('movies/search/', [MovieController::class, 'search'])->name('movies.search');
 Route::get('movies/location', [MovieController::class, 'location'])->name('movies.location');
+Route::post('/user/otp/verify',[UserController::class,'verifyOtp'])->name('otp.verify');
+Route::post('/user/otp/template', [UserController::class, 'otpMsgTemplate'])->name('otp.message.template');
+Route::post('/user/otp/deliver', [UserController::class, 'otpMsgDeliver'])->name('otp.message.deliver');
+Route::post('/user/otp/code/verify', [UserController::class, 'otpVerify'])->name('otp.code.verify');
+Route::post('/user/otp/resend',[UserController::class,'otpResend'])->name('otp.resend');
+
 Route::group([
     'middleware' => ['auth:users']
 ], function () {

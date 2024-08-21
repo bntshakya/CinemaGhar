@@ -22,7 +22,7 @@ class RegisterController extends Controller
         if ($request['password'] === $request['confirm_password']){
                 $user = register::where('email', $request['email'])->first();
                 if ($user) {
-                    return redirect()->route('register.show')->with('status', 'user already exists');
+                    return redirect()->back()->with('status', 'user already exists');
                 }
                 $abc = $stripe->customers->create([
                     'name' => $request['username'],
@@ -77,7 +77,7 @@ public function checkPasswords(Request $request) {
         if ($request['password'] === $request['confirm_password']) {
                 $user = adminusers::where('email', $request['email'])->first();
                 if ($user) {
-                    return redirect()->route('admin.Register')->with('status', 'user already exists');
+                    return redirect()->back()->with('status', 'user already exists');
                 }
                 adminusers::create(['username' => $request['username'], 'email' => $request['email'], 'password' => Hash::make($request['password']), 'role' => $request['role'][0]]);
             return redirect()->route('admin.Register');
