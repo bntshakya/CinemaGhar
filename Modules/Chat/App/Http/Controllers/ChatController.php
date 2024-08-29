@@ -44,7 +44,7 @@ class ChatController extends Controller
         $user_id = session('id');
         $tracked_list = TrackMessage::where('user_id', $user_id)->value('msg_list');
         if (is_null($user_id) or is_null($tracked_list)) {
-            $tracked_list = [['type' => 'admin', 'msg' => 'begin conversation']];
+            $tracked_list = [];
         }
         return view('chat', ['users' => register::all(), 'tracklist' => $tracked_list, 'user_id' => $user_id]);
     }

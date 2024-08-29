@@ -450,7 +450,7 @@ class TicketController extends Controller
             $payment_intent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
         }
 
-        return redirect()->route('tickets.view');
+        return redirect()->back()->with(['paymentStatus'=>'payment Success']);
     }
 
     public function bookTickets(Request $request){
@@ -461,9 +461,10 @@ class TicketController extends Controller
         $seats = json_encode($request->input('selected_seats'));
         $bookInstance = TicketBooking::create(['movie_name'=>$movieName,'location_id'=>$locationId,'movie_time_id'=>$movieTimeId,'email'=>$email,'selected_seats'=>$seats]);
         if($bookInstance){
-            return response()->json(['msg'=>'created book tickets instance']);
+            $request->session()->flash('bookStatus', 'Task was successful!');
+            return response()->json(['bookStatus'=>'created book tickets instance']);
         }
-        return response()->json(['msg'=>'failed to create book tickets instance']);
+        return response()->json(['bookStatus'=>'failed to create book tickets instance']);
     }
 
     public function viewBookedTickets(){

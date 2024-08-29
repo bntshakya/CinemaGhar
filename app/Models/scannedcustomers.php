@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class scannedcustomers extends Model
 {
     use HasFactory;
-    protected $fillable= ['movie','movietime','location','hall'];
+    protected $fillable= ['movie','movietime','location','hall','seatNumber'];
 }

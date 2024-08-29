@@ -13,26 +13,33 @@ class QrcodeController extends Controller
 {
     public function generateqr(Request $request)
     {
-        $ticket = Ticket::find($request->ticket_id);
+        $ticketIds = $request['ticketsId'];
+        foreach($ticketIds as $ticketId){
+            $ticket = Ticket::find($ticketId);
 
-        if (!$ticket) {
-            abort(404, 'Ticket not found');
+            if (!$ticket) {
+                abort(404, 'Ticket not found');
+            }
+            
+            $location = $ticket->location;
+            $time = $ticket->movietime;
+            $moviename = $ticket->movie_name;
+            $movietime = $time->movie_time;
+            $movie_location = $location->location;
+            $movie_hall = $location->hall_name;
+            $seat = $ticket->ticket_seat;
+
+            $route[] = [
+                'Movie' => $moviename,
+                'MovieTime' => $movietime,
+                'Location' => $movie_location,
+                'Hall' => $movie_hall,
+                'Seat' => $seat,
+            ];
         }
 
-        $location = $ticket->location;
-        $time = $ticket->movietime;
-        $moviename = $ticket->movie_name;
-        $movietime = $time->movie_time;
-        $movie_location = $location->location;
-        $movie_hall = $location->hall_name;
-
         // Generate route URL without escaping
-        $route = route('qr.moviecustomerscanned', [
-            'Movie' => $moviename,
-            'MovieTime' => $movietime,
-            'Location' => $movie_location,
-            'Hall' => $movie_hall,
-        ]);
+      
 
         $ticketdetails = [
             'Movie' => $moviename,
@@ -41,16 +48,18 @@ class QrcodeController extends Controller
             'Hall' => $movie_hall,
         ];
 
-        return view('qrcode', ['route' => ($route),'ticket'=>json_encode($ticketdetails)]);
+        return view('qrcode', ['routes' => ($route),'ticket'=>json_encode($ticketdetails)]);
     }
 
     public function scannedcustomers(Request $request)
     {
+        // dd($request->all());
         $movie_name = $request['Movie'];
         $movie_time = $request['MovieTime'];
         $location  = $request['Location'];
         $hall = $request['Hall'];
-        \Event::dispatch(new QRScanned($movie_name,$movie_time,$hall,$location));
+        $seat = $request['Seat'];
+        \Event::dispatch(new QRScanned($movie_name,$movie_time,$hall,$location,$seat));
         return view('successfully-scanned');
     }
 

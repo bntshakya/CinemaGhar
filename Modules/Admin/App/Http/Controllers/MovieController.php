@@ -103,7 +103,7 @@ class MovieController extends Controller
             'movie_id' => $movie_id,
             'screening_cost' => $screeningCost // Assuming $screeningCost is defined and valid
         ]); 
-        return redirect()->route('movie.show')->with('success', 'movie added');
+        return redirect()->route('admin.movieslist')->with('success', 'movie added');
     }
     public function edit(Request $request)
     {
@@ -287,6 +287,9 @@ class MovieController extends Controller
             $bookableFlag = false;
         };
         // dd($timeGap,$movietimeCarbon,$currentTime);
+        if (is_null($defaultCardId)){
+            return view('movies.selecthall', ['hall' => $hall, 'movie' => $movie, 'tickets' => $tickets, 'movietime' => $request['time'], 'movie_time_id' => $movie_time_id, 'movietime_' => $movietime, 'ticketrate' => $ticketrate, 'paymentMethods' => $paymentMethods, 'bookableFlag' => $bookableFlag,'defaultCardId'=>null]);
+        }
         return view('movies.selecthall', ['hall' => $hall, 'movie' => $movie, 'tickets' => $tickets, 'movietime' => $request['time'], 'movie_time_id' => $movie_time_id, 'movietime_' => $movietime, 'ticketrate' => $ticketrate, 'paymentMethods' => $paymentMethods,'defaultCardId'=>$defaultCardId->CardId,'bookableFlag'=>$bookableFlag]);
     }
 

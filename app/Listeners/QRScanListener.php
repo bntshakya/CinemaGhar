@@ -24,6 +24,6 @@ class QRScanListener
     public function handle(QRScanned $event): void
     {
         //
-        scannedcustomers::create(['movie' => $event->movie_name, 'movietime' => $event->movie_time, 'location' => $event->location, 'hall' => $event->hall]);
+        scannedcustomers::create(['movie' => $event->movie_name, 'movietime' => $event->movie_time, 'location' => $event->location, 'hall' => $event->hall,'seatNumber'=>$event->seat]);
     }
 }

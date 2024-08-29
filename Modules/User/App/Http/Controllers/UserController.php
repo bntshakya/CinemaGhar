@@ -51,7 +51,7 @@ class UserController extends Controller
             'customer' => $customerId,
             'type' => 'card',
         ]);
-        return view('user::show',['paymentMethods' => $paymentMethods]);
+        return view('user::show', ['paymentMethods' => $paymentMethods]);
     }
 
     /**
@@ -78,16 +78,18 @@ class UserController extends Controller
         //
     }
 
-    public function viewcards(){
+    public function viewcards()
+    {
         return view('user::addCard');
     }
 
-    public function addCards(Request $request){
+    public function addCards(Request $request)
+    {
         $user = \Auth::user();
         $stripeCustomerId = $user->StripeCustomerId;
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET_KEY'));
-        $abc = $stripe->customers->createSource($stripeCustomerId,['source'=>'tok_visa']);
-        
+        $abc = $stripe->customers->createSource($stripeCustomerId, ['source' => 'tok_visa']);
+
     }
 
     public function payment(Request $request)
@@ -108,21 +110,24 @@ class UserController extends Controller
             'pm_card_mastercard_debit',
             ['customer' => 'cus_QZ0Yq0WQDFCg9D']
         );
-    //     $paymentMethod = \Stripe\PaymentMethod::create([
-    //         'type' => 'card',
-    //         ['source'=>'tok_amex']
-    //     ]);
+        //     $paymentMethod = \Stripe\PaymentMethod::create([
+        //         'type' => 'card',
+        //         ['source'=>'tok_amex']
+        //     ]);
 
-    //     // Retrieve the customer
-    //     $customer = \Stripe\Customer::retrieve('cus_QZ0Yq0WQDFCg9D');
+        //     // Retrieve the customer
+        //     $customer = \Stripe\Customer::retrieve('cus_QZ0Yq0WQDFCg9D');
 
-    //     // Attach the Payment Method to the Customer
-    //     $paymentMethod->attach([
-    //         'customer' => $customer->id,
-    //     ]);
+        //     // Attach the Payment Method to the Customer
+        //     $paymentMethod->attach([
+        //         'customer' => $customer->id,
+        //     ]);
     }
 
-    public function viewPaymentMethods(){
+    public function viewPaymentMethods()
+    {
+        // dd(env('HELLO_HERO'));
+
         $customer = Auth::user();
         $customerId = $customer->StripeCustomerId;
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET_KEY'));
@@ -130,19 +135,20 @@ class UserController extends Controller
             'customer' => $customerId,
             'type' => 'card',
         ]);
-        if(CustomerCard::where('CustomerId', $customerId)->where('isDefault', 1)->exists()){
-            $defaultMethod = CustomerCard::where('CustomerId',$customerId)->where('isDefault',1)->first();
+        if (CustomerCard::where('CustomerId', $customerId)->where('isDefault', 1)->exists()) {
+            $defaultMethod = CustomerCard::where('CustomerId', $customerId)->where('isDefault', 1)->first();
             $defaultMethodCard = $stripe->customers->retrievePaymentMethod(
                 $customerId,
                 $defaultMethod->CardId,
             );
-        }else{
+        } else {
             $defaultMethodCard = false;
         }
-        return view('user::CustomerCards',['paymentMethods'=>$paymentMethods,'defaultMethod'=>$defaultMethodCard]);
+        return view('user::CustomerCards', ['paymentMethods' => $paymentMethods, 'defaultMethod' => $defaultMethodCard]);
     }
 
-    public function setCard(Request $request){
+    public function setCard(Request $request)
+    {
         $cardId = $request->input('paymentMethod');
         $customerId = Auth::user()->StripeCustomerId;
         // dd(CustomerCard::all());
@@ -150,19 +156,20 @@ class UserController extends Controller
             ->where('CardId', $cardId)
             ->first();
         if ($CustomerCardDefault) {
-            CustomerCard::where('CustomerId',$customerId)->update(['isDefault'=>false]);
+            CustomerCard::where('CustomerId', $customerId)->update(['isDefault' => false]);
             $CustomerCardDefault->update(['isDefault' => true]);
-        }else{
+        } else {
             return redirect()->back()->with('status', 'Card doesnt exist');
         }
         return redirect()->back()->with('status', 'Default card set successfully.');
 
     }
 
-    public function viewSubscriptions(){
+    public function viewSubscriptions()
+    {
         $customerId = Auth::user()->StripeCustomerId;
-        $SubscriptionExists = CustomerSubscription::where('customerId',$customerId)->exists();
-        return view('user::SubscriptionPage',['SubscriptionExists'=>$SubscriptionExists]);
+        $SubscriptionExists = CustomerSubscription::where('customerId', $customerId)->exists();
+        return view('user::SubscriptionPage', ['SubscriptionExists' => $SubscriptionExists]);
     }
 
     public function selectSubscription()
@@ -194,23 +201,26 @@ class UserController extends Controller
     }
 
 
-    public function selectSubscriptionMethod(){
+    public function selectSubscriptionMethod()
+    {
         return view('user::subscribe');
     }
 
-    public function deleteSubscription(){
+    public function deleteSubscription()
+    {
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET_KEY'));
         $customerId = $customerId = Auth::user()->StripeCustomerId;
-        $ifexists = CustomerSubscription::where('customerId',$customerId)->exists();
-        if($ifexists){
-            $subscriptionId = CustomerSubscription::where('customerId',$customerId)->first('subscriptionId');
+        $ifexists = CustomerSubscription::where('customerId', $customerId)->exists();
+        if ($ifexists) {
+            $subscriptionId = CustomerSubscription::where('customerId', $customerId)->first('subscriptionId');
             $stripe->subscriptions->cancel($subscriptionId->subscriptionId);
-            CustomerSubscription::where('customerId',$customerId)->delete();
+            CustomerSubscription::where('customerId', $customerId)->delete();
         }
         return redirect()->route('User.Subscriptions')->with(['msg', 'successfully updated subscription']);
     }
 
-    public function selectPayment(){
+    public function selectPayment()
+    {
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET_KEY'));
         $customer = Auth::user();
         $customerId = $customer->StripeCustomerId;
@@ -218,16 +228,18 @@ class UserController extends Controller
             'customer' => $customerId,
             'type' => 'card',
         ]);
-        return view('user::PaymentPage',['paymentMethods'=>$paymentMethods]);
+        return view('user::PaymentPage', ['paymentMethods' => $paymentMethods]);
     }
 
-    public function cancelBookedTickets(Request $request){
+    public function cancelBookedTickets(Request $request)
+    {
         $id = $request['CancelId'];
         TicketBooking::find($id)->delete();
         return redirect()->back()->with(['msg' => 'successfully deleted bookings']);
     }
 
-    public function verifyOtp(){
+    public function verifyOtp()
+    {
         $request = new HTTP_Request2();
         $request->setUrl('https://vv5ywm.api.infobip.com/2fa/2/applications');
         $request->setMethod(HTTP_Request2::METHOD_POST);
@@ -235,7 +247,7 @@ class UserController extends Controller
             'follow_redirects' => TRUE
         ));
         $request->setHeader(array(
-            'Authorization' => 'App '. env('INFOBIP_API_KEY'),
+            'Authorization' => 'App ' . env('INFOBIP_API_KEY'),
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ));
@@ -252,7 +264,8 @@ class UserController extends Controller
         }
     }
 
-    public function otpMsgTemplate(Request $request){
+    public function otpMsgTemplate(Request $request)
+    {
         $appId = $request->input('appId');
         // dd($appId);
         $request = new HTTP_Request2();
@@ -283,7 +296,8 @@ class UserController extends Controller
 
     }
 
-    public function otpMsgDeliver(Request $request){
+    public function otpMsgDeliver(Request $request)
+    {
         $applicationId = $request->input('appId');
         $messageId = $request->input('msgId');
         $request = new HTTP_Request2();
@@ -311,7 +325,8 @@ class UserController extends Controller
         }
     }
 
-    public function otpVerify(Request $request){
+    public function otpVerify(Request $request)
+    {
         $pinId = $request->input('pinId');
         $pinCode = $request->input('pinCode');
         $request = new HTTP_Request2();
@@ -330,8 +345,8 @@ class UserController extends Controller
             $response = $request->send();
             if ($response->getStatus() == 200) {
                 echo $response->getBody();
-            } else { 
-                echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' . $response->getBody().
+            } else {
+                echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' . $response->getBody() .
                     $response->getReasonPhrase();
             }
         } catch (HTTP_Request2_Exception $e) {
@@ -339,7 +354,8 @@ class UserController extends Controller
         }
     }
 
-    public function otpResend(Request $request){
+    public function otpResend(Request $request)
+    {
         $pinId = $request->input('pinId');
         $request = new HTTP_Request2();
         $request->setUrl("https://vv5ywm.api.infobip.com/2fa/2/pin/{$pinId}/resend");

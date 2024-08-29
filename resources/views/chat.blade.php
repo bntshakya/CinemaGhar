@@ -95,7 +95,7 @@
             $('#message-user').val('');
         })
     });
-    
+
 </script>
 
 </html>

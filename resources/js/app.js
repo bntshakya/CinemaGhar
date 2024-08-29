@@ -3,6 +3,8 @@ import "laravel-datatables-vite";
 import { Malle } from "@deltablot/malle";
 import pq from "pqgridf";
 
+
+
 /*
  * jQuery plugin that changes any element on your page
  *
@@ -460,6 +462,7 @@ import pq from "pqgridf";
 })(jQuery);
 
 document.addEventListener("DOMContentLoaded", function () {
+    
     // window.Echo.channel('movie-revenue')
     //   .listen('salesSearchEvent', (e) => {
     //     debugger;
@@ -471,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.Echo.channel("qr-channel").listen("QRScanned", (e) => {
-        console.log("here");
+        console.log(e);
 
         // Assuming 'e' contains the ticket information in a structure like { movie: 'Movie Name', movietime: 'Time', location: 'Location', hall: 'Hall' }
         const table = document.getElementById("ticketsTable"); // Select the table by ID
@@ -483,21 +486,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const timeCell = newRow.insertCell(1);
         const locationCell = newRow.insertCell(2);
         const hallCell = newRow.insertCell(3);
+        const seatCell = newRow.insertCell(4);
 
         // Add the text content for each cell
         movieCell.textContent = e.movie_name;
         timeCell.textContent = e.movie_time;
         locationCell.textContent = e.location;
         hallCell.textContent = e.hall;
+        seatCell.textContent = e.seat;
 
         // Optionally, add classes or styles to the new row or cells
         newRow.className =
             "bg-white border-b dark:bg-gray-800 dark:border-gray-700";
         movieCell.className =
-            "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white";
+            "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-dark";
         timeCell.className = "px-6 py-4";
         locationCell.className = "px-6 py-4";
         hallCell.className = "px-6 py-4";
+        seatCell.className = "px-6 py-4";
+
     });
 
     window.Echo.channel("test").listen("ChatSent", (event) => {

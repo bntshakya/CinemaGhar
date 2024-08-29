@@ -20,14 +20,17 @@ class QRScanned implements ShouldBroadcast
     public $movie_name;
     public $movie_time;
     public $hall;
+    public $seat;
     public $location;
-    public function __construct($movie_name,$movie_time,$hall,$location)
+
+    public function __construct($movie_name,$movie_time,$hall,$location,$seat)
     {
         //
         $this->movie_name = $movie_name;
         $this->movie_time = $movie_time;
         $this->hall = $hall;
         $this->location = $location;
+        $this->seat = $seat;
     }
 
     /**

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Methods</title>
 </head>
 <x-navbar></x-navbar>
+
 <body>
     <div class="defaultMethod">
         @if ($defaultMethod)
@@ -35,16 +37,18 @@
                             <h5 class="card-title">{{ $paymentMethod->card->brand }}</h5>
                             <p class="card-text">
                                 <strong>Country:</strong> {{ $paymentMethod->card->country }}<br>
-                                <strong>Expiry:</strong> {{ $paymentMethod->card->exp_month }}/{{ $paymentMethod->card->exp_year }}<br>
+                                <strong>Expiry:</strong>
+                                {{ $paymentMethod->card->exp_month }}/{{ $paymentMethod->card->exp_year }}<br>
                                 <strong>Last 4 Digits:</strong> **** **** **** {{ $paymentMethod->card->last4 }}
                             </p>
                         </div>
                     </div>
-            </label>
+                </label>
             </div>
         @endforeach
         <button type="submit">Submit</button>
     </form>
     <button><a href="{{route('card.view')}}">Add Card</a></button>
 </body>
+
 </html>

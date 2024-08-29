@@ -28,24 +28,31 @@
                         <th scope="col" class="px-6 py-3">
                             Hall
                         </th>
+                        <th scope="col" class="px-6 py-3">
+                            Seat
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($tickets as $ticket)
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-dark">
-                                {{$ticket->movie}}
-                            </th>
-                            <td class="px-6 py-4">
-                                {{$ticket->movietime}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{$ticket->location}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{$ticket->hall}}
-                            </td>
-                        </tr>
+                    
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-dark">
+                                    {{$ticket->movie}}
+                                </th>
+                                <td class="px-6 py-4">
+                                    {{$ticket->movietime}}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{$ticket->location}}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{$ticket->hall}}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{$ticket->seatNumber}}
+                                </td>
+                            </tr>
                     @endforeach
                 </tbody>
             </table>
